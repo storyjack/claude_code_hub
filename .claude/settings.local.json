@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build 2>&1)",
+      "Bash(git add -A && git commit -m \"$\\(cat <<'EOF'\nfix scroll: fallback for re-attached terminals, viewport wheel detection\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\" && git push)"
+    ]
+  }
+}

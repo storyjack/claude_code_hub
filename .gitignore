@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.dmg
+*.dmg.blockmap
+*.zip
+builder-debug.yml
+mac/
+mac-arm64/
+.DS_Store
+.env
+.env.*
+dist-app/

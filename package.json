@@ -1,0 +1,77 @@
+{
+  "name": "claude-code-hub",
+  "version": "1.0.0",
+  "description": "Desktop app for managing multiple Claude Code terminal sessions",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "dev:renderer": "vite",
+    "build:renderer": "vite build",
+    "build": "vite build && electron-builder --mac",
+    "build:dir": "vite build && electron-builder --mac --dir",
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^8.2.2",
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8",
+    "vite": "^5.4.0",
+    "wait-on": "^7.2.0"
+  },
+  "dependencies": {
+    "node-pty": "^1.2.0-beta.12",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "xterm": "^5.3.0",
+    "xterm-addon-fit": "^0.8.0",
+    "xterm-addon-web-links": "^0.9.0"
+  },
+  "build": {
+    "appId": "com.claude-code-hub.app",
+    "productName": "OpHub",
+    "files": [
+      "electron/**/*",
+      "dist/**/*",
+      "node_modules/node-pty/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "node_modules/node-pty",
+        "to": "node-pty",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64"
+          ]
+        }
+      ],
+      "identity": null,
+      "icon": "resources/icon.icns",
+      "category": "public.app-category.developer-tools",
+      "darkModeSupport": false
+    },
+    "dmg": {
+      "title": "OpHub",
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
+  }
+}

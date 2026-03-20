@@ -1,0 +1,38 @@
+#!/bin/bash
+# ophub — Launch Claude Code Hub from anywhere
+# Usage: ophub [project-dir]
+
+set -e
+
+# Resolve symlink to find the real script location
+SCRIPT="$0"
+while [ -L "$SCRIPT" ]; do
+  SCRIPT_DIR="$(cd "$(dirname "$SCRIPT")" && pwd)"
+  SCRIPT="$(readlink "$SCRIPT")"
+  # Handle relative symlinks
+  [[ "$SCRIPT" != /* ]] && SCRIPT="$SCRIPT_DIR/$SCRIPT"
+done
+HUB_DIR="$(cd "$(dirname "$SCRIPT")/.." && pwd)"
+
+# Ensure dist exists (production frontend)
+if [ ! -d "$HUB_DIR/dist" ]; then
+  echo "[ophub] Building frontend..."
+  (cd "$HUB_DIR" && npx vite build 2>/dev/null)
+fi
+
+# Ensure node_modules exist
+if [ ! -d "$HUB_DIR/node_modules" ]; then
+  echo "[ophub] Installing dependencies..."
+  (cd "$HUB_DIR" && npm install --production 2>/dev/null)
+fi
+
+# If a project directory is passed, set it as default
+if [ -n "$1" ] && [ -d "$1" ]; then
+  export OPHUB_INITIAL_CWD="$(cd "$1" 2>/dev/null && pwd || echo "$1")"
+  shift
+fi
+
+# Launch Electron — direct binary for fast startup (skip npx/node wrapper)
+cd "$HUB_DIR"
+ELECTRON_BIN="$HUB_DIR/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron"
+exec "$ELECTRON_BIN" "$HUB_DIR" "$@"
